@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resized Image</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Resized Image</h2>
+        <!-- Tambahkan id untuk img dan download button -->
+        <img id="resizedImage" class="img-fluid" alt="Resized Image">
+        <button id="downloadButton" class="btn btn-primary">Download Image</button>
+        <button type="button" class="btn btn-secondary" onclick="goBack()">Back</button>
+        <script>
+            function goBack() {
+              window.history.back();
+            }
+        </script>
+
+    </div>
+
+    <script>
+        // JavaScript untuk mengatur src gambar dan menambahkan event listener ke tombol download
+        document.addEventListener("DOMContentLoaded", function() {
+            // URL gambar yang akan dimuat
+            var imageUrl = "/static/resized_image.jpg";
+            
+            // Mengatur src gambar
+            document.getElementById("resizedImage").src = imageUrl;
+
+            // Menambahkan event listener ke tombol download
+            document.getElementById("downloadButton").addEventListener("click", function() {
+                // Membuat link untuk mengunduh gambar
+                var downloadLink = document.createElement("a");
+                downloadLink.href = imageUrl;
+                downloadLink.download = "resized_image.jpg"; // Nama file yang akan diunduh
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            });
+        });
+    </script>
+</body>
+</html>

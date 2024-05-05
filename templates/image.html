@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag and Drop File Upload</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+</head>
+<body>
+    
+    <div class="container ">
+        <div class="header-section">
+            <h1>Image Editor</h1>
+            <p>Your ultimate companion for unleashing creativity through powerful image editing tools</p>
+        </div>
+        <form action="/resize" method="post" enctype="multipart/form-data">
+            <div class="drop-section">
+                <div class="col">
+                    <span id="file-name"></span>
+                    <div id="image-preview"></div>
+                    <div id="elementToHide">
+                        <div class="cloud-icon">
+                            <img src="{{ url_for('static', filename='icons/cloud.png') }}" alt="cloud">
+                        </div>
+                        <span>Drag & Drop your files here</span>
+                        <span>OR</span>
+                    </div>
+                    <input type="file" class="form-control-file" id="image" name="image" style="display: none;" onchange="displayFileName()">
+                    <button type="button" class="btn btn-secondary" onclick="document.getElementById('image').click();">Choose File</button>                
+                </div>
+
+                    <script>
+                        function displayFileName() {
+                            var input = document.getElementById('image');
+                            var fileName = input.files[0].name;
+                            document.getElementById('file-name').textContent = fileName;
+
+                            if (input.files && input.files[0]) {
+                                var reader = new FileReader();
+                                reader.onload = function (e) {
+                                    var preview = document.getElementById('image-preview');
+                                    preview.innerHTML = '<img src="' + e.target.result + '" alt="Image Preview" style="max-width: 100%; max-height: 200px;">';
+                                }
+                                reader.readAsDataURL(input.files[0]);
+                            }
+
+                            var element = document.getElementById('elementToHide');
+                            element.style.display = 'none';
+                        }
+                    </script>
+                <div class="col">
+                    <div class="drop-here">Drop Here</div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="width">Resize Width (pixels):</label>
+                    <input type="number" class="form-control" id="width" name="width" min="1">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="height">Resize Height (pixels):</label>
+                    <input type="number" class="form-control" id="height" name="height" min="1">
+                </div>
+            </div>
+            <!-- <label for="crop_coords">Crop Coords:</label> -->
+            <div class="form-row">
+                <!-- <div class="form-group col-md-6">
+                    <input type="text" class="form-control" id="coords_x1" name="crop_coords" placeholder="x1">
+                </div>
+                <div class="form-group col-md-6">
+                    <input type="text" class="form-control" id="coords_y1" name="crop_coords" placeholder="y1">
+                </div>
+                <div class="form-group col-md-6">
+                    <input type="text" class="form-control" id="coords_x2" name="crop_coords" placeholder="x2">
+                </div>
+                <div class="form-group col-md-6">
+                    <input type="text" class="form-control" id="coords_y2" name="crop_coords" placeholder="y2">
+                </div> -->
+                <div class="form-group col-md-12">
+                    <label for="rotation_angle">Rotation Angle (°):</label>
+                    <input type="number" class="form-control" id="rotation_angle" name="rotation_angle">
+                </div>
+            </div>
+            <button type="submit" class="resize btn btn-primary">Resize Image</button>
+        </form>
+    </div>
+</body>
+</html>
