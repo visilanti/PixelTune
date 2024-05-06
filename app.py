@@ -1,11 +1,13 @@
+import os
 from flask import Flask, render_template, request, redirect, send_file, url_for
 from werkzeug.utils import secure_filename
 from pydub import AudioSegment
 from PIL import Image
 import io
-import os
 
 app = Flask(__name__)
+#using path absolute
+base_dir = os.path.abspath(os.path.dirname(__file__))
 
 @app.route('/')
 def index():
@@ -36,11 +38,6 @@ def resize_image():
 
     width = int(request.form['width']) if request.form['width'] else default_width
     height = int(request.form['height']) if request.form['height'] else default_height
-    # x1 = int(request.form['coords_x1'])
-    # y1 = int(request.form['coords_y1'])
-    # x2 = int(request.form['coords_x2'])
-    # y2 = int(request.form['coords_y2'])
-    # crop_coords = tuple(map(int, (x1, y1, x2, y2)))
     rotation_angle = int(request.form['rotation_angle']) if request.form['rotation_angle'] else default_rotation_angle
 
     
@@ -49,14 +46,14 @@ def resize_image():
     
     img = Image.open(file)
     resized_img = img.resize((width, height))
-    # Crop the image
-    # cropped_image = resized_img.crop(crop_coords)
-
-    # Rotate the image
     rotated_image = resized_img.rotate(rotation_angle)
     
+    save_directory = os.path.join(base_dir, 'static')
+    filename = 'resized_image.jpg'
+    save_path = os.path.join(save_directory, filename)
+
     # Save the edited image
-    rotated_image.save('static/resized_image.jpg')
+    rotated_image.save(save_path)
 
     return redirect(url_for('resized'))
 
@@ -70,12 +67,11 @@ def audio_compression():
         file = request.files['audio']
         if file:
             file_name = secure_filename(file.filename)
-            file_path = os.path.join('static', file_name)  # Assuming 'uploads' is the directory where files are uploaded
-            file.save(file_path)  # Save the uploaded file to the specified directory
+            file_path = os.path.join(base_dir, 'static', file_name) 
+            file.save(file_path)  
             audio_io = io.BytesIO()
             audio = AudioSegment.from_mp3(file_path)
             audio.export(audio_io, format='mp3', bitrate='64k')
-            # Clean up: remove the uploaded file after processing
             os.remove(file_path)
             return send_file(
                 audio_io,
@@ -92,8 +88,5 @@ def audio_compression():
         <h1>Uknown method</h1>
     '''
 
-
-
-
-
-
+if __name__ == '__main__':
+    app.run(debug=True)
