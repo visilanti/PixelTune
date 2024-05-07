@@ -1,12 +1,12 @@
-import os
 from flask import Flask, render_template, request, redirect, send_file, url_for
 from werkzeug.utils import secure_filename
 from pydub import AudioSegment
 from PIL import Image
 import io
+import os
 
 app = Flask(__name__)
-#using path absolute
+
 base_dir = os.path.abspath(os.path.dirname(__file__))
 
 @app.route('/')
@@ -27,14 +27,12 @@ def resize_image():
         return 'No file uploaded'
     
     file = request.files['image']
-
     img = Image.open(io.BytesIO(file.read()))
+    
     width, height = img.size
-
     default_width = width
     default_height = height
     default_rotation_angle = 0
-
 
     width = int(request.form['width']) if request.form['width'] else default_width
     height = int(request.form['height']) if request.form['height'] else default_height
@@ -52,9 +50,7 @@ def resize_image():
     filename = 'resized_image.jpg'
     save_path = os.path.join(save_directory, filename)
 
-    # Save the edited image
     rotated_image.save(save_path)
-
     return redirect(url_for('resized'))
 
 @app.route('/resized')
